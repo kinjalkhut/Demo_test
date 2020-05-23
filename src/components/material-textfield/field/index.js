@@ -506,6 +506,8 @@ export default class TextField extends PureComponent {
       errored,
       restricted,
       style: labelTextStyle,
+      // alignItems:'flex-end'
+      // backgroundColor:'red'
     };
 
     const counterProps = {

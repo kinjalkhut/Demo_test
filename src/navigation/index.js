@@ -10,7 +10,7 @@ const StackNavigator = createSwitchNavigator(
 
   },
   {
-    initialRouteName: 'authStack',
+    initialRouteName: 'primaryStack',
     headerMode: 'none',
     mode: 'modal'
   }
