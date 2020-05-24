@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Images } from '../utils/Images'
 import { TextField } from '../components/material-textfield'
 import { onLogin} from '../redux/loginReducer'
+import OAuthManager from 'react-native-oauth';
 
 function LoginScreen({ navigation }) {
     const [Email, setemail] = useState('')
@@ -46,6 +47,20 @@ function LoginScreen({ navigation }) {
        setError(error)
     }
 
+  function onGithubSignup(){
+    const manager = new OAuthManager('firestackexample')
+    manager.configure({
+      github: {
+        client_id: 'Iv1.3a8eb35331ce03e6',
+        client_secret: '4364bda2cbf3a7392d35f3f01829de47948dbf0e'
+      }
+    });
+
+    manager.authorize('github')
+    .then(resp => console.warn('Your users ID',resp))
+    .catch(err => console.warn('There was an error'))
+        }
+
   return (
     <View style={styles.container}>
     <KeyboardAvoidingView behavior={'position'} style={styles.container}>
@@ -75,7 +90,7 @@ function LoginScreen({ navigation }) {
           {error.length !=0 && error.map(data=> <Text style={styles.errorStyle}>{data}</Text>)}
        </View>
        <View style={styles.buttonContainer}>
-         <TouchableOpacity style={styles.githhubButton}>
+         <TouchableOpacity style={styles.githhubButton} onPress={onGithubSignup}>
             <Text style={styles.githubText}>Sign in with github</Text>
          </TouchableOpacity>
          <TouchableOpacity style={styles.loginButton} onPress={onlogin}>
