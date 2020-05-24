@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import { StyleSheet, View, FlatList,Text, TouchableOpacity, Image, KeyboardAvoidingView,TextInput } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
-import { EditProfile, logout} from '../redux/loginReducer'
+import { EditProfile, logout, onLogout} from '../redux/loginReducer'
 import { Images } from '../utils/Images'
 import Video from 'react-native-video';
 import { TextField } from '../components/material-textfield'
@@ -9,6 +9,7 @@ import { TextField } from '../components/material-textfield'
 function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
   const userDetails = useSelector(state => state.loginReducer.userDetails)
+  const isSocialLogin = useSelector(state => state.loginReducer.isSocialLogin)
   const [Email, setemail] = useState('')
   const [Username, setUsername] = useState('')  
   const [PhoneNumber, setPhoneNumber] = useState('')
@@ -16,7 +17,6 @@ function ProfileScreen({ navigation }) {
 
   useEffect(()=>{
     // dispatch(getVideos())
-    console.warn("12", userDetails)
     if(userDetails){
     setemail(userDetails.email)
     setUsername(userDetails.username)  
@@ -39,7 +39,8 @@ function ProfileScreen({ navigation }) {
  }
 
  function onlogout(){
-     dispatch(logout())
+   
+     dispatch(onLogout(isSocialLogin))
      navigation.navigate('authStack')
  }
 

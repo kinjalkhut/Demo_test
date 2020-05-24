@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { StyleSheet, View, FlatList,Text, TouchableOpacity, Image, KeyboardAvoidingView, ScrollView,TextInput } from 'react-native'
+import { StyleSheet, View, FlatList,Text, TouchableOpacity, Image, KeyboardAvoidingView, ScrollView,TextInput, Alert } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 import { TextField } from '../components/material-textfield'
 
@@ -17,15 +17,12 @@ function TestStripScreen({ navigation }) {
 
   useEffect(()=>{
     // dispatch(gettestStrips())
-    console.warn("22",testStripList)
     settestStips(testStripList)
 },[testStripList])
 
 function onChangeInput(text, item){
-    console.warn("33",item)
     const list =[...testStips]
     const range = item.range.filter(data=> data.value == parseInt( text))
-    console.warn("11",range)
     const i = testStips.findIndex(e=> e.id == item.id)
     if(range.length !=0){
     list[i] = {...list[i], isSelected : range[0] }
@@ -37,14 +34,12 @@ function  renderItem({item, index}){
     // console.warn("2",item)
         return(
         <View style={{ flexDirection:'row'}}>
-          <View style={styles.selectionStripCont}>
-         
-
+          <View style={styles.selectionStripCont}> 
           </View>
-          
-        <View>
+         
+        <View style={{marginLeft: 10}}>
             <View style={{flex:1, flexDirection:'row',  alignItems:'center',  }}>
-            <Text style={styles.title}>{item.title}</Text>
+            <Text style={styles.title}>{item.title + ' (ppm)'}</Text>
             <View style={{flex:1,width:'100%', alignItems:'flex-end'}}>
 
                <TextInput
@@ -56,11 +51,13 @@ function  renderItem({item, index}){
             </View>
             </View>
             <View  style={{flexDirection:'row',marginVertical:'4%'}}>
-            <View style={[styles.colorView,{width : 20,  backgroundColor : item.isSelected.color ,marginLeft:-20}]}/>
+            <View style={[styles.colorView,{width : 20,  backgroundColor : item.isSelected.color ,marginLeft:-30,marginVertical:5,}]}/>
             {
                 item.range.map(data=>(
             <View>
+              <View style={{borderWidth:item.isSelected.value ==data.value ? 3 : 0, paddingVertical:5, borderColor : 'green', borderRadius: 5, alignItems:'center'}}>
                     <View style={[styles.colorView,{ backgroundColor : data.color}]}/>
+                    </View>
                     <Text style={{textAlign:'center',marginVertical:'2%'}}>{data.value}</Text>
                 </View>
                 ))
@@ -71,10 +68,26 @@ function  renderItem({item, index}){
         </View>
     )}
 
+    function onNext(){
+      var msg =''
+      testStips.map(data=>{
+        msg = msg + ' ' + data.title + ':' + data.isSelected.value
+      })
+      console.warn("msg",msg)
+      Alert.alert(
+        'Test Strip',
+        msg,
+        [
+         { text: 'OK', onPress: () => console.log('OK Pressed') }
+        ],
+        
+      );
+    }
+
   return (
     <View style={styles.container}>
         <View style={styles.nextCont}>
-            <TouchableOpacity style={styles.next}>
+            <TouchableOpacity style={styles.next} onPress={onNext}>
                 <Text style={{color:'white',fontSize:15}}>Next</Text>
             </TouchableOpacity>
      </View>

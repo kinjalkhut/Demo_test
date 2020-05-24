@@ -5,6 +5,7 @@ import { Images } from '../utils/Images'
 import { TextField } from '../components/material-textfield'
 import { onLogin} from '../redux/loginReducer'
 import OAuthManager from 'react-native-oauth';
+import { manager} from '../utils/services'
 
 function LoginScreen({ navigation }) {
     const [Email, setemail] = useState('')
@@ -14,10 +15,8 @@ function LoginScreen({ navigation }) {
     const isloggedIn = useSelector(state => state.loginReducer.isLoggedIn)
 
     useEffect(()=>{
-      console.warn("1223",isloggedIn)
 
       if(isloggedIn){
-        console.warn("123")
         navigation.navigate('Home')
       }
     },[isloggedIn])
@@ -41,25 +40,23 @@ function LoginScreen({ navigation }) {
         dispatch(onLogin({
           Email,
           Password
-        }))
+        }, false))
        }
 
        setError(error)
     }
 
   function onGithubSignup(){
-    const manager = new OAuthManager('firestackexample')
-    manager.configure({
-      github: {
-        client_id: 'Iv1.3a8eb35331ce03e6',
-        client_secret: '4364bda2cbf3a7392d35f3f01829de47948dbf0e'
-      }
-    });
-
+    
     manager.authorize('github')
-    .then(resp => console.warn('Your users ID',resp))
-    .catch(err => console.warn('There was an error'))
-        }
+    .then(resp =>{ 
+      if(resp.response.credentials.accessToken){
+        dispatch(onLogin({}, true))
+       }
+      
+  })
+    
+ }
 
   return (
     <View style={styles.container}>
@@ -91,6 +88,7 @@ function LoginScreen({ navigation }) {
        </View>
        <View style={styles.buttonContainer}>
          <TouchableOpacity style={styles.githhubButton} onPress={onGithubSignup}>
+         <Image source={Images.github} style={styles.github}/>
             <Text style={styles.githubText}>Sign in with github</Text>
          </TouchableOpacity>
          <TouchableOpacity style={styles.loginButton} onPress={onlogin}>
@@ -168,10 +166,13 @@ const styles = StyleSheet.create({
   },
   githhubButton:{
     padding:10,
-    backgroundColor:'black'
+    backgroundColor:'black',
+    flexDirection:'row'
   },
   githubText:{
-    color:'white'
+    color:'white',
+    alignSelf:'center',
+    marginLeft:'2%'
   },
   loginButton:{
 borderBottomLeftRadius:25,
@@ -184,6 +185,10 @@ justifyContent:'center'
   errorStyle:{
     color:'red',
     top:'2%'
+  },github:{
+    height:30,
+    width:40,
+    tintColor:'white'
   }
 })
 

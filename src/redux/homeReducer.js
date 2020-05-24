@@ -120,7 +120,7 @@ export const gettestStrips = user => {
     },
     {
       id:2,
-      title : 'Total Hardness',
+      title : 'pH',
       range :[{
         color:'#f0de6e',
         value : 0
